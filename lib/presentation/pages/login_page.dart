@@ -35,7 +35,7 @@ class LoginPage extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
 
-            if (authProvider.error != null) {
+            if (authProvider.error != null && !authProvider.errorShown) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -47,10 +47,13 @@ class LoginPage extends StatelessWidget {
                     backgroundColor: Colors.red,
                   ),
                 );
+                // Marca o erro como exibido para não repetir
+                authProvider.markErrorShown();
               });
             }
 
-            if (authProvider.user != null) {
+            if (authProvider.user != null &&
+                ModalRoute.of(context)?.isCurrent == true) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.of(context).pushReplacementNamed('/home');
               });
