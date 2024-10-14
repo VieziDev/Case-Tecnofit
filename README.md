@@ -25,10 +25,10 @@ Optei por utilizar fundamentos da Clean Architecture combinados com o Provider p
 
 1. **Clone o repositório:**
    ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
+   git clone https://github.com/VieziDev/Case-Tecnofit.git
 2. **Navegue até o diretório do projeto:**
    ```bash
-   cd nome-do-projeto
+   cd Case-Tecnofit
 3. **Navegue até o diretório do projeto:**
    ```bash
    flutter pub get
