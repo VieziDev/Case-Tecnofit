@@ -12,14 +12,20 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final getIt = GetIt.instance;
-  final sharedPreferences = await SharedPreferences.getInstance();
+  WidgetsFlutterBinding
+      .ensureInitialized(); // Garante que os widgets sejam inicializados corretamente
+  final getIt =
+      GetIt.instance; // Instância de GetIt para injeção de dependências
+  final sharedPreferences = await SharedPreferences
+      .getInstance(); // Obtém uma instância de SharedPreferences
 
+  // Registra o AuthRepository para ser utilizado como singleton na aplicação
   getIt.registerLazySingleton<AuthRepository>(() => AuthRepository());
+  // Registra o LoginUseCase que depende de AuthRepository
   getIt.registerLazySingleton<LoginUseCase>(
       () => LoginUseCase(getIt<AuthRepository>()));
 
+  // Inicializa a aplicação
   runApp(MyApp(
     sharedPreferences: sharedPreferences,
   ));
@@ -27,32 +33,39 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final SharedPreferences sharedPreferences;
+
+  // Construtor que recebe uma instância de SharedPreferences
   const MyApp({super.key, required this.sharedPreferences});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-            create: (_) =>
-                ThemeProvider(sharedPreferences)), // Provider para o tema
+        // Provider responsável pelo gerenciamento do tema da aplicação
+        ChangeNotifierProvider(create: (_) => ThemeProvider(sharedPreferences)),
+        // Provider responsável pelo gerenciamento de autenticação
         ChangeNotifierProvider(
             create: (context) => AuthProvider(loginUseCase: GetIt.I.get())),
       ],
+      // Consumer2 para consumir os providers de tema e autenticação simultaneamente
       child: Consumer2<ThemeProvider, AuthProvider>(
         builder: (context, themeProvider, authProvider, child) {
           return MaterialApp(
-            debugShowCheckedModeBanner: false,
+            debugShowCheckedModeBanner: false, // Remove a bandeira de debug
             title: 'Login App',
+            // Configura o tema claro e escuro da aplicação
             theme: MaterialTheme(createTextTheme(context, "Heebo", "Syne"))
                 .light(),
             darkTheme:
                 MaterialTheme(createTextTheme(context, "Heebo", "Syne")).dark(),
-            themeMode: themeProvider.themeMode,
+            themeMode:
+                themeProvider.themeMode, // Aplica o tema escolhido pelo usuário
+            // Define a rota inicial com base na autenticação do usuário
             initialRoute: authProvider.user != null ? '/home' : '/',
             routes: {
-              '/': (context) => LoginPage(),
-              '/home': (context) => const HomePage(),
+              '/': (context) => LoginPage(), // Página de login
+              '/home': (context) =>
+                  const HomePage(), // Página inicial após login
             },
           );
         },

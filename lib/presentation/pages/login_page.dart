@@ -1,4 +1,3 @@
-// lib/presentation/pages/login_page.dart
 import 'package:case_tecnofit/presentation/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
